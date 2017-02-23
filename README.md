@@ -2,4 +2,5 @@
 ### About
 Base converter command line tool.  
 Under development!!  
-Hex -> Bin and Hex -> Dec available  
+Hex -> Bin & Dec and Dec -> Bin & Hex available
+Basic hexadecimal calculator included
