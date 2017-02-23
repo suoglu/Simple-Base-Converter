@@ -17,18 +17,37 @@ string hexToBin(string hex);
 void hexBinOp();
 void hexDecOp();
 void hexallOp();
+void decallOp();
+void decbinOp();
+void dechexOp();
+string decToHex(long long dec);
+int stringToint(string str);
+bool intIn(int & in);
+void hexCalc();
+void addHex();
+void subHex();
+void mltHex();
+void divHex();
+void getOperants(string & x, string & y);
+
 
 int main()
 {
     cout << "Welcome to the base converter\n";
     cout << "****************\n";
     cout << "NOTICE: This program is still under developlent all features are not available\n";
-    cout << "****************\n\n";
-    cout << "Convertions:\n";
-    cout << "1. Hex -> Bin\n";
-    cout << "2. Hex -> Dec\n";
-    cout << "3. Hex -> Bin & Dec\n";
-    cout << "0. Exit\n";
+    cout << "****************\n";
+help:
+    cout << "\nConvertions:\n";
+    cout << "1.   Hex -> Bin\n";
+    cout << "2.   Hex -> Dec\n";
+    cout << "3.   Hex -> Bin & Dec\n";
+    cout << "4.   Dec -> Hex\n";
+    cout << "5.   Dec -> Bin\n";
+    cout << "6.   Dec -> Bin & Hex\n";
+    cout << "10.  Hex calculator\n";
+    cout << "0.   Exit\n";
+    cout << "333. Help\n";
     short op;
     
     do {
@@ -44,9 +63,24 @@ int main()
             case 3:
                 hexallOp();
                 break;
+            case 4:
+                dechexOp();
+                break;
+            case 5:
+                decbinOp();
+                break;
+            case 6:
+                decallOp();
+                break;
+            case 10:
+                hexCalc();
+                break;
+            case 333:
+                goto help;
         }
     } while (op != 0);
-    
+
+    cout << "\nGood bye :)\n";
     return 0;
 }
 
@@ -80,7 +114,7 @@ bool decInCheck(string in)
 }
 
 bool hexInCheck(string in)
-//return false if input is in decimal format
+//return false if input is in hexadecimal format
 {
     for(int j = 0; j < in.size(); j++)
     {
@@ -110,6 +144,7 @@ long long hexToDec(string hex)
 //converts hexadecimal number to decimal
 {
     long long dec = 0;
+    toLower(hex);
     for(int j = 0; j < hex.size(); j++)
     {
         dec *= 16;
@@ -183,6 +218,7 @@ string singleHexToBin(char hex)
 string hexToBin(string hex)
 //converts hexadecimal number to binary
 {
+    toLower(hex);
     string bin = "";
     for(int j = 0; j < hex.size(); j++)
     {
@@ -197,7 +233,6 @@ bool hexIn(string & hex)
 {
     cout << "\nHexadecimal number: ";
     cin >> hex;
-    toLower(hex);
     if(hexInCheck(hex))
     {
         cout << "Returning main menu...\n\n";
@@ -241,11 +276,213 @@ void hexallOp()
 
 }
 
+string decToHex(long long dec)
+//convert decimal digit to hex
+{
+    string hex = "";
+    do
+    {
+        int digit = dec % 16;
+        
+        if(digit < 10)
+        {
+            char dig = (digit + '0');
+            hex = dig + hex;
+        }
+        else
+        {
+            char dig = (digit + 'A' - 10);
+            hex = dig + hex;
+        }
+        dec = dec / 16;
+    }while(dec != 0);
+    
+    return hex;
+}
+
+int stringToint(string str)
+//convert sting to int
+{
+    int res = 0;
+    for(int i = 0; i< str.size();i++)
+    {
+        res *= 10;
+        res = res + str[i] - '0';
+    }
+    return res;
+}
+
+bool decIn(int & dec)
+//take hex input
+{
+    string dec_s;
+    cout << "\nDecimal number: ";
+    cin >> dec_s;
+    if(decInCheck(dec_s))
+    {
+        cout << "Returning main menu...\n\n";
+        return true;
+    }
+    dec = stringToint(dec_s);
+    return false;
+}
+
+void decbinOp()
+{
+    int dec;
+    
+    if(decIn(dec))
+        return;
+    
+    cout << "Binary: " << hexToBin(decToHex(dec)) << endl;
+}
+void dechexOp()
+{
+    int dec;
+    
+    if(decIn(dec))
+        return;
+    
+    cout << "Hexadecimal: " << decToHex(dec) << endl;
+}
+void decallOp()
+{
+    int dec;
+    
+    if(decIn(dec))
+        return;
+    
+    cout << "Binary: " << hexToBin(decToHex(dec)) << endl;
+    cout << "Hexadecimal: " << decToHex(dec) << endl;
+}
+
+void getOperants(string & x, string & y)
+{
+    while(true)
+    {
+        cout << "x = ";
+        cin >> x;
+        if(!hexInCheck(x))
+        {
+            break;
+        }
+    }
+    
+    while(true)
+    {
+        cout << "y = ";
+        cin >> y;
+        if(!hexInCheck(y))
+        {
+            break;
+        }
+    }
+}
+
+void addHex()
+{
+    cout << "Format: x + y\n";
+    string x, y;
+    getOperants(x, y);
+    cout << x << " + " << y << " = ";
+    long long result_d = hexToDec(x) + hexToDec(y);
+    string result_h = decToHex(result_d);
+    cout << result_h << endl << "Result = " << result_h << endl;
+}
+void subHex()
+{
+    cout << "Format: x - y\n";
+    string x, y;
+    getOperants(x, y);
+    cout << x << " - " << y << " = ";
+    long long result_d = hexToDec(x) - hexToDec(y);
+    string result_h = "";
+    if(0 > result_d)
+    {
+        result_h = "-";
+        result_d *= -1;
+    }
+    result_h = result_h + decToHex(result_d);
+    cout << result_h << endl << "Result = " << result_h << endl;
+}
+void mltHex()
+{
+    cout << "Format: x * y\n";
+    string x, y;
+    getOperants(x, y);
+    cout << x << " * " << y << " = ";
+    long long result_d = hexToDec(x) * hexToDec(y);
+    string result_h = decToHex(result_d);
+    cout << result_h << endl << "Result = " << result_h << endl;
+}
+void divHex()
+{
+    cout << "Notice: Only integer part of the result will be calculated\n";
+    cout << "Format: x / y\n";
+    string x, y;
+    getOperants(x, y);
+    cout << x << " / " << y << " = ";
+    long long result_d = hexToDec(x) / hexToDec(y);
+    string result_h = decToHex(result_d);
+    cout << result_h << endl << "Result = " << result_h << endl;
+
+}
+
+void hexCalc()
+{
+    char op;
+    cout << "\nWelcome to hexadecimal calculator\n";
+    cout << "I can do following operations\n";
+    cout << "+ or 1 ~ Addition\n";
+    cout << "- or 2 ~ Subtraction\n";
+    cout << "* or 3 ~ Multipication\n";
+    cout << "/ or 4 ~ Division\n";
+    cout << "   0   ~ Exit\n";
+    cout << "Notice: Hexadecimal calculator only works with positive integers\n";
+    
+    do {
+
+        cout << "Please enter operation: ";
+        cin >> op;
+        
+        
+        if(op == '+')
+        {
+            op = '1';
+        }
+        else if(op == '-')
+        {
+            op = '2';
+        }
+        else if(op == '*')
+        {
+            op = '3';
+        }
+        else if(op == '/')
+        {
+            op = '4';
+        }
 
 
-
-
-
-
-
+        switch (op) {
+            case '0':
+                return;
+            case '1':
+                addHex();
+                break;
+            case '2':
+                subHex();
+                break;
+            case '3':
+                mltHex();
+                break;
+            case '4':
+                divHex();
+                break;
+            default:
+                cout << "Operation not found!\n";
+                break;
+        }
+    } while (true);
+}
 
